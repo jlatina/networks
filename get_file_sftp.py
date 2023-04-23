@@ -18,12 +18,9 @@ request_msg = "GET {}".format(filename) + "\r\n"
 bstring = request_msg.encode()
 
 # default IP addr of server & port 
-if (len(sys.arg[2]) > 1):
-    ip = sys.arg[2]
+if (len(sys.argv[2]) > 1):
+    ip = sys.argv[2]
 else:
      ip = "127.0.0.1"
 
-# client_soc.sendto(bstring, (ip,9000))
-
-print(request_msg)
-print(ip)
+client_soc.sendto(bstring, (ip,9000))
