@@ -13,6 +13,7 @@ from get_file_sftp import bstring, filename
 
 # create server socket 
 server_soc = s.socket(s.AF_INET, s.SOCK_DGRAM)
+server_soc.bind( ("127.0.0.1",9000))
 
 # list to store responses of server 
 messages = ['FOUND', 'BADREQUEST', 'TOOLARGE', 'NOTFOUND']
