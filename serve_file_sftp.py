@@ -8,7 +8,7 @@ import sys
 import socket as s
 import os
 import hashlib
-from get_file_sftp import bstring, filename
+# from get_file_sftp import bstring, filename
 
 
 # create server socket 
@@ -21,13 +21,14 @@ messages = ['FOUND', 'BADREQUEST', 'TOOLARGE', 'NOTFOUND']
 
 while True:
     message, address = server_soc.recvfrom(1024)
-    normalstr = bstring.decode()
+    print(f"speaking to {address}")
+    params = message.decode().split()
+    print(message.decode())
     
     # try & catch for opening the file 
+    file_size = os.stat(params[1]).st_size
 
-    file_size = os.stat(filename).st_size
-
-    with open(filename,'rb') as f:
+    with open(params[1],'rb') as f:
         contents = f.read()
 
     # check if it's in the directory
