@@ -24,6 +24,8 @@ while True:
     print(f"speaking to {address}")
     params = message.decode().split()
     print(message.decode())
+    if (params[1].upper() == 'EXIT'):
+        break
     
     # try & catch for opening the file 
     file_size = os.stat(params[1]).st_size
@@ -31,8 +33,10 @@ while True:
     with open(params[1],'rb') as f:
         contents = f.read()
 
+    print(contents)
     # check if it's in the directory
     files = os.listdir()
+    print(files)
 
     h=hashlib.md5()
     h.update(contents)
