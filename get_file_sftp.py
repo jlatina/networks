@@ -40,8 +40,26 @@ def main():
         print(f"{filename} includes directory specifications and is not allowed")
         return 
 
-    lines = reply.split('\n')
-    print(lines)
+    lines = reply.split('\r\n')
+    server_md5 = lines[1].split()[1]
+    server_filelen = lines[2].split()[1]
+    file_contents = lines[3]
+    
+    h=hashlib.md5()
+    h.update(file_contents.encode())
+    md5sum = h.hexdigest()
+
+    if server_md5 != md5sum:
+        print("The md5 check failed! Exiting without storing.")
+        return
+    elif server_filelen != str(len(file_contents)):
+        print(f"The file length check failed! {server_filelen} != {len(file_contents)}")
+        return
+    else: print("Proceeding!")
+    
+
+    
+
 
 if __name__ == "__main__":
     main()
