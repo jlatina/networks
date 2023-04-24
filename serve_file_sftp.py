@@ -20,24 +20,42 @@ messages = ['FOUND', 'BADREQUEST', 'TOOLARGE', 'NOTFOUND']
 
 
 while True:
-    message, address = server_soc.recvfrom(1024)
-    print(f"speaking to {address}")
-    params = message.decode().split()
-    print(message.decode())
-    if (params[1].upper() == 'EXIT'):
-        break
+
+    try:
+        message, address = server_soc.recvfrom(1024)
+        print(f"speaking to {address}")
+        params = message.decode().split()
+        print(message.decode())
+        if params[1].upper() == 'EXIT':
+            break
+
+        if params[0] != "GET":
+           print("BADREQUEST {}".format(params[1]) + "\r\n")
+        
+        file_size = os.stat(params[1]).st_size
+
+        with open(params[1],'rb') as f:
+            contents = f.read()
+
+        sendmsg = f"FOUND {params[1]}\r\n"
+
+        h=hashlib.md5()
+        h.update(contents)
+        md5sum = h.hexdigest()
+
+        sendmsg = sendmsg + f"MD5 {md5sum}\r\n"
+        sendmsg = sendmsg + f"LENGTH {len(contents)}\r\n"
+        sendmsg = sendmsg + contents.decode()
+
+        print(sendmsg)
+
+
+    except FileNotFoundError:
+        print("NOTFOUND {}".format(params[1]) + "\r\n")
+       
+
+   
     
-    # try & catch for opening the file 
-    file_size = os.stat(params[1]).st_size
-
-    with open(params[1],'rb') as f:
-        contents = f.read()
-
-    print(contents)
-    # check if it's in the directory
-    files = os.listdir()
-    print(files)
-
-    h=hashlib.md5()
-    h.update(contents)
-    md5sum = h.hexdigest()
+            
+            
+    
