@@ -29,8 +29,8 @@ while True:
         if params[1].upper() == 'EXIT':
             break
 
-        if params[0] != "GET":
-           sendmsg = "BADREQUEST {}".format(params[1]) + "\r\n"
+        if '/' in params[1]:
+           raise Exception
         
         file_size = os.stat(params[1]).st_size
 
@@ -56,6 +56,9 @@ while True:
 
     except FileNotFoundError:
         sendmsg = "NOTFOUND {}".format(params[1]) + "\r\n"
+
+    except Exception:
+        sendmsg = "BADREQUEST {}".format(params[1]) + "\r\n"
 
     print(sendmsg)
 
