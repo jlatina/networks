@@ -23,7 +23,16 @@ if (len(sys.argv) > 2):
 else:
      ip = "127.0.0.1"
 
-# client_soc.sendto(bstring, (ip,9000))
+client_soc.sendto(bstring, (ip,9000))
 
-print(request_msg)
-print(ip)
+reply = client_soc.recv(1024).decode()
+
+if 'NOTFOUND' in reply:
+    print(f"{filename} was not found in the server's directory.")
+if 'TOOLARGE' in reply:
+    print(f"{filename} was found in the server, but the file size exceeded UDP packet size and could not be sent")
+if "BADREQUEST" in reply:
+    print(f"{filename} includes directory specifications and is not allowed")
+
+lines = reply.split('\n')
+print(lines)

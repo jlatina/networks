@@ -33,6 +33,7 @@ while True:
            raise Exception
         
         file_size = os.stat(params[1]).st_size
+        print(file_size)
 
         with open(params[1],'rb') as f:
             contents = f.read()
@@ -44,23 +45,22 @@ while True:
         md5sum = h.hexdigest()
 
         sendmsg = sendmsg + f"MD5 {md5sum}\r\n"
-        sendmsg = sendmsg + f"LENGTH {len(contents)}\r\n"
+        sendmsg = sendmsg + f"LENGTH {file_size}\r\n"
         sendmsg = sendmsg + contents.decode()
 
-        print(sendmsg)
         headerlen_bits = len(sendmsg) * 8
         avail_space = 2**16 - headerlen_bits
-        if (len(contents) * 8 > avail_space):
-            sendmsg = f"TOO LARGE {params}\r\n"
+        if (file_size * 8 > avail_space):
+            sendmsg = f"TOOLARGE {params[1]}\r\n"
 
 
     except FileNotFoundError:
         sendmsg = "NOTFOUND {}".format(params[1]) + "\r\n"
 
     except Exception:
-        sendmsg = "BADREQUEST {}".format(params[1]) + "\r\n"
+        sendmsg = "BADREQUEST\r\n"
 
-    print(sendmsg)
+    server_soc.sendto(sendmsg.encode(), address)
 
        
     
