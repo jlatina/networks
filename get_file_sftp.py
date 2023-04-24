@@ -9,30 +9,39 @@ import socket as s
 import os
 import hashlib
 
-# create client socket 
-client_soc = s.socket(s.AF_INET, s.SOCK_DGRAM)
-filename = sys.argv[1]
-request_msg = "GET {}".format(filename) + "\r\n"
 
-# encode the message before sending it 
-bstring = request_msg.encode()
 
-# default IP addr of server & port 
-if (len(sys.argv) > 2):
-    ip = sys.argv[2]
-else:
-     ip = "127.0.0.1"
+def main():
+    # create client socket 
+    client_soc = s.socket(s.AF_INET, s.SOCK_DGRAM)
+    filename = sys.argv[1]
+    request_msg = "GET {}".format(filename) + "\r\n"
 
-client_soc.sendto(bstring, (ip,9000))
+    # encode the message before sending it 
+    bstring = request_msg.encode()
 
-reply = client_soc.recv(1024).decode()
+    # default IP addr of server & port 
+    if (len(sys.argv) > 2):
+        ip = sys.argv[2]
+    else:
+        ip = "127.0.0.1"
 
-if 'NOTFOUND' in reply:
-    print(f"{filename} was not found in the server's directory.")
-if 'TOOLARGE' in reply:
-    print(f"{filename} was found in the server, but the file size exceeded UDP packet size and could not be sent")
-if "BADREQUEST" in reply:
-    print(f"{filename} includes directory specifications and is not allowed")
+    client_soc.sendto(bstring, (ip,9000))
 
-lines = reply.split('\n')
-print(lines)
+    reply = client_soc.recv(1024).decode()
+
+    if 'NOTFOUND' in reply:
+        print(f"{filename} was not found in the server's directory.")
+        return
+    if 'TOOLARGE' in reply:
+        print(f"{filename} was found in the server, but the file size exceeded UDP packet size and could not be sent")
+        return 
+    if "BADREQUEST" in reply:
+        print(f"{filename} includes directory specifications and is not allowed")
+        return 
+
+    lines = reply.split('\n')
+    print(lines)
+
+if __name__ == "__main__":
+    main()
