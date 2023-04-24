@@ -20,7 +20,7 @@ messages = ['FOUND', 'BADREQUEST', 'TOOLARGE', 'NOTFOUND']
 
 
 while True:
-
+    sendmsg = ""
     try:
         message, address = server_soc.recvfrom(1024)
         print(f"speaking to {address}")
@@ -30,7 +30,7 @@ while True:
             break
 
         if params[0] != "GET":
-           print("BADREQUEST {}".format(params[1]) + "\r\n")
+           sendmsg = "BADREQUEST {}".format(params[1]) + "\r\n"
         
         file_size = os.stat(params[1]).st_size
 
@@ -48,11 +48,19 @@ while True:
         sendmsg = sendmsg + contents.decode()
 
         print(sendmsg)
+        headerlen_bits = len(sendmsg) * 8
+        avail_space = 2**16 - headerlen_bits
+        if (len(contents) * 8 > avail_space):
+            sendmsg = f"TOO LARGE {params}\r\n"
 
 
     except FileNotFoundError:
-        print("NOTFOUND {}".format(params[1]) + "\r\n")
+        sendmsg = "NOTFOUND {}".format(params[1]) + "\r\n"
+
+    print(sendmsg)
+
        
+    
 
    
     
