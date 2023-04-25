@@ -57,7 +57,7 @@ def main():
             return
         else: 
             print("Proceeding!")
-            with open(filename,'w') as f:
+            with open(filename,'w+') as f:
                 f.write(file_contents)
 
 if __name__ == "__main__":
