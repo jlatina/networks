@@ -72,7 +72,7 @@ def get_route(addr, nets):
     
 def get_route_hard(addr, nets):
   addr_split = addr.split('.')
-  longest_pref = None
+  longest_pref = -1
   best_net = None
   address = np.array([int(item) for sublist in addr_split for item in '{0:08b}'.format(int(sublist))])
   for enum, net in enumerate(nets):
@@ -86,9 +86,6 @@ def get_route_hard(addr, nets):
 
     masked_addr = address * net_mask
     if (masked_addr == subnet).all():
-      if longest_pref == None:
-        longest_pref = int(size)
-        best_net = enum
       if int(size) > longest_pref:
         longest_pref = int(size)
         best_net = enum
@@ -100,6 +97,7 @@ def get_route_hard(addr, nets):
 def main():
   # should print 2
   print(get_route("128.197.128.9",["10.0.0.0/8","128.0.0.0/8","128.197.0.0/16"]))
+  print(get_route_hard("128.197.128.9",["10.0.0.0/8","128.0.0.0/8","128.197.0.0/16"]))
 
 if __name__ == '__main__':
   main()
