@@ -1,5 +1,8 @@
 # Copyright 2023 Jeanette Villanueva jivillan@bu.edu
 # Copyright 2023 Tristen Liu tristenl@bu.edu
+
+import ipaddress as ip
+#https://realpython.com/python-enumerate/ for enumerate()
 """
 EC441 Spring 2023
 Lab 3 : Routing
@@ -43,6 +46,27 @@ of the ipaddress module.
 
 def get_route(addr, nets):
   """return the index of the network that matches addr using longest-prefix matching"""
+  
+# Convert the address to an IPv4Address object
+  ip_addr_obj = ip.IPv4Address(addr)
+
+# Convert each network to an IPv4Network object
+  network_objs = [ip.IPv4Network(net) for net in nets]
+
+  
+  longest_prefix_match = None 
+  index = -1
+
+  # how enumerate works, prints: index value
+  for i, network in enumerate(network_objs):
+    print(i,network)
+
+    # iterate over the networks to perform longest-prefix matching between IPv4 objs
+  #for i, network in enumerate(network_objs):
+    # check if the given ip_addr is within ONE of the networks   
+   # if ip_addr_obj in network: 
+        #print (f"Yes the address {addr} exists in the IPv4 networks")
+  
   return None
 
 
