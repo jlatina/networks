@@ -45,30 +45,29 @@ of the ipaddress module.
 """
 
 def get_route(addr, nets):
-  """return the index of the network that matches addr using longest-prefix matching"""
-  
-# Convert the address to an IPv4Address object
-  ip_addr_obj = ip.IPv4Address(addr)
+    """Return the index of the network that matches addr using longest-prefix matching"""
+    
+    # Convert the address to an IPv4Address object
+    ip_addr_obj = ip.IPv4Address(addr)
 
-# Convert each network to an IPv4Network object
-  network_objs = [ip.IPv4Network(net) for net in nets]
+    # Convert each network to an IPv4Network object
+    network_objs = [ip.IPv4Network(net) for net in nets]
 
-  
-  longest_prefix_match = None 
-  index = -1
+    longest_prefix_match = None 
+    prefix_len = -1
 
-  # how enumerate works, prints: index value
-  for i, network in enumerate(network_objs):
-    print(i,network)
-
-    # iterate over the networks to perform longest-prefix matching between IPv4 objs
-  #for i, network in enumerate(network_objs):
-    # check if the given ip_addr is within ONE of the networks   
-   # if ip_addr_obj in network: 
-        #print (f"Yes the address {addr} exists in the IPv4 networks")
-  
-  return None
-
+    # Iterate over the networks to perform longest-prefix matching between IPv4 objects
+    for i, network in enumerate(network_objs):
+        # Check if the given ip_addr is within ONE of the networks
+        # If the network.prefixlen is better than the current prefix_len then set it to the better one   
+        if ip_addr_obj in network and network.prefixlen > prefix_len:
+            longest_prefix_match = i
+            prefix_len = network.prefixlen
+    
+    if longest_prefix_match is not None:
+        return longest_prefix_match
+    else:
+        return None
 
 def main():
   # should print 2
