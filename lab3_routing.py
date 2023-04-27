@@ -2,6 +2,7 @@
 # Copyright 2023 Tristen Liu tristenl@bu.edu
 
 import ipaddress as ip
+import numpy as np
 #https://realpython.com/python-enumerate/ for enumerate()
 """
 EC441 Spring 2023
@@ -68,6 +69,33 @@ def get_route(addr, nets):
         return longest_prefix_match
     else:
         return None
+    
+def get_route_hard(addr, nets):
+  addr_split = addr.split('.')
+  longest_pref = None
+  best_net = None
+  address = np.array([int(item) for sublist in addr_split for item in '{0:08b}'.format(int(sublist))])
+  for enum, net in enumerate(nets):
+    network, size = net.split('/')
+    net_mask = np.array([1]*int(size) + [0]*(32-int(size)))
+    network = network.split('.')
+    for i, segment in enumerate(network):
+       network[i] = '{0:08b}'.format(int(segment))
+    
+    subnet = np.array([int(item) for sublist in network for item in sublist])
+
+    masked_addr = address * net_mask
+    if (masked_addr == subnet).all():
+      if longest_pref == None:
+        longest_pref = int(size)
+        best_net = enum
+      if int(size) > longest_pref:
+        longest_pref = int(size)
+        best_net = enum
+
+  return best_net
+   
+
 
 def main():
   # should print 2
